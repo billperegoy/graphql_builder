@@ -2,9 +2,11 @@ defmodule GraphqlBuilderTest do
   use ExUnit.Case
   doctest GraphqlBuilder
 
-  describe "basic queries" do
+  alias GraphqlBuilder.Query
+
+  describe "queries" do
     test "without nested fields" do
-      query = %{operation: :thoughts, fields: [:id, :name, :thought]}
+      query = %Query{operation: :thoughts, fields: [:id, :name, :thought]}
 
       expected = """
       query {
@@ -16,11 +18,11 @@ defmodule GraphqlBuilderTest do
       }
       """
 
-      assert GraphqlBuilder.generate(query) == expected
+      assert GraphqlBuilder.query(query) == expected
     end
 
     test "with nested fields" do
-      query = %{
+      query = %Query{
         operation: :orders,
         fields: [:id, :amount, user: [:id, :name, :email, address: [:city, :country]]]
       }
@@ -43,7 +45,71 @@ defmodule GraphqlBuilderTest do
       }
       """
 
-      assert GraphqlBuilder.generate(query) == expected
+      assert GraphqlBuilder.query(query) == expected
+    end
+
+    test "with query params" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:name, :thought],
+        variables: [id: 12]
+      }
+
+      expected = """
+      query {
+        thoughts(id: 12) {
+          name,
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+  end
+
+  describe "mutations" do
+    test "without required variables" do
+      query = %Query{
+        operation: :thought_create,
+        variables: [
+          name: "Tyrion Lannister'",
+          thought: "I drink and I know things."
+        ],
+        fields: [:id]
+      }
+
+      expected = """
+      mutation {
+        thought_create(name: "Tyrion Lannister'", thought: "I drink and I know things.") {
+          id
+        }
+      }
+      """
+
+      assert GraphqlBuilder.mutation(query) == expected
+    end
+
+    test "with nested mutation arguments" do
+      query = %Query{
+        operation: :update_breed,
+        variables: [
+          id: 12,
+          params: [label: "label", abbreviation: "abbreviation"]
+        ],
+        fields: [:label, :abbreviation]
+      }
+
+      expected = """
+      mutation {
+        update_breed(id: 12, params: {label: "label", abbreviation: "abbreviation"}) {
+          label,
+          abbreviation
+        }
+      }
+      """
+
+      assert GraphqlBuilder.mutation(query) == expected
     end
   end
 end
