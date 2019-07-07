@@ -95,6 +95,25 @@ mutation {
 ```
 ### Mutation With Nested Params
 
+```
+iex> query = %Query{
+...>   operation: :update_breed,
+...>   variables: [
+...>     id: 12,
+...>     params: [label: "label", abbreviation: "abbreviation"]
+...>   ],
+...>   fields: [:label, :abbreviation]
+...> }
+
+iex> GraphqlBuilder.mutation(query)
+mutation {
+  update_breed(id: 12, params: {label: "label", abbreviation: "abbreviation"}) {
+    label,
+    abbreviation
+  }
+}
+
+```
 
 ## Installation
 
