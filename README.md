@@ -11,17 +11,14 @@ for node development.
 Here are some usage examples:
 
 ### Simple Query
+
 ```
+iex> query = %Query{operation: :thoughts, fields: [:id, :name, :thought]}
 
-iex> query = %Query{
-  operation: :thoughts,
-  fields: [:name, :thought],
-  variables: [id: 12]
-}
-
-iex> GraphqlBuilder.query(query)
+iex>  GraphqlBuilder.query(query)
 query {
-  thoughts(id: 12) {
+  thoughts {
+    id,
     name,
     thought
   }
@@ -43,6 +40,35 @@ query {
   thoughts(id: 12) {
     name,
     thought
+  }
+}
+
+```
+
+### Query with Nested Fields
+
+```
+
+iex> query = %Query{
+  operation: :orders,
+  fields: [:id, :amount, user: [:id, :name, :email, address: [:city, :country]]]
+}
+
+iex> GraphqlBuilder.query(query)
+expected = """
+query {
+  orders {
+    id,
+    amount,
+    user {
+      id,
+      name,
+      email,
+      address {
+        city,
+        country
+      }
+    }
   }
 }
 
