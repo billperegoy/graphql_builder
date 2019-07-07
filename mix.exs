@@ -7,7 +7,10 @@ defmodule GraphqlBuilder.MixProject do
       version: "0.1.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "Tool to build GraphQL query strings from Elixir structs",
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/billperegoy/graphql_builder"}
     ]
   end
 
