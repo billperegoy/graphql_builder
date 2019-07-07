@@ -73,6 +73,29 @@ query {
 
 ```
 
+### Simple Mutation
+
+```
+iex> query = %Query{
+...>  operation: :thought_create,
+...>  variables: [
+...>    name: "Tyrion Lannister'",
+...>    thought: "I drink and I know things."
+...>  ],
+...>  fields: [:id]
+...>}
+
+iex> GraphqlBuilder.mutation(query)
+mutation {
+  thought_create(name: "Tyrion Lannister'", thought: "I drink and I know things.") {
+    id
+  }
+}
+
+```
+### Mutation With Nested Params
+
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
