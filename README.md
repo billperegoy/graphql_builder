@@ -10,6 +10,7 @@ for node development.
 
 Here are some usage examples:
 
+### Simple Query
 ```
 
 iex> query = %Query{
@@ -18,19 +19,34 @@ iex> query = %Query{
   variables: [id: 12]
 }
 
-iex> GraphqlBuilder.query(query) == expected
-
-"""
+iex> GraphqlBuilder.query(query)
 query {
   thoughts(id: 12) {
     name,
     thought
   }
 }
-"""
 
 ```
 
+### Simple Query with Variables
+```
+
+iex> query = %Query{
+  operation: :thoughts,
+  fields: [:name, :thought],
+  variables: [id: 12]
+}
+
+iex> GraphqlBuilder.query(query)
+query {
+  thoughts(id: 12) {
+    name,
+    thought
+  }
+}
+
+```
 
 ## Installation
 
