@@ -30,10 +30,10 @@ query {
 ```
 
 iex> query = %Query{
-  operation: :thoughts,
-  fields: [:name, :thought],
-  variables: [id: 12]
-}
+...>   operation: :thoughts,
+...>   fields: [:name, :thought],
+...>   variables: [id: 12]
+...> }
 
 iex> GraphqlBuilder.query(query)
 query {
@@ -50,12 +50,11 @@ query {
 ```
 
 iex> query = %Query{
-  operation: :orders,
-  fields: [:id, :amount, user: [:id, :name, :email, address: [:city, :country]]]
-}
+...>   operation: :orders,
+...>   fields: [:id, :amount, user: [:id, :name, :email, address: [:city, :country]]]
+...> }
 
 iex> GraphqlBuilder.query(query)
-expected = """
 query {
   orders {
     id,
