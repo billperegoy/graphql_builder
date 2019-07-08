@@ -1,6 +1,6 @@
 defmodule GraphqlBuilder do
   @moduledoc """
-  Documentation for GraphqlBuilder.
+  Module conatining business logic for buiilding GraphQL queries and mutations.
   """
 
   alias GraphqlBuilder.Query
@@ -37,13 +37,13 @@ defmodule GraphqlBuilder do
     |> Enum.join()
   end
 
-  @spec query_keyword() :: String.t()
-  defp query_keyword() do
+  @spec query_keyword :: String.t()
+  defp query_keyword do
     "query {\n"
   end
 
-  @spec mutation_keyword() :: String.t()
-  defp mutation_keyword() do
+  @spec mutation_keyword :: String.t()
+  defp mutation_keyword do
     "mutation {\n"
   end
 
