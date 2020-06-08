@@ -66,6 +66,44 @@ defmodule GraphqlBuilderTest do
 
       assert GraphqlBuilder.query(query) == expected
     end
+
+    test "with integer lists" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:name, :thought],
+        variables: [ids: [12, 13]]
+      }
+
+      expected = """
+      query {
+        thoughts(ids: [12,13]) {
+          name,
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
+    test "with string lists" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:name, :thought],
+        variables: [ids: ["12", "13"]]
+      }
+
+      expected = """
+      query {
+        thoughts(ids: ["12","13"]) {
+          name,
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
   end
 
   describe "mutations" do
