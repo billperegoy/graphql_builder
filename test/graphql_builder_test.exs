@@ -112,4 +112,43 @@ defmodule GraphqlBuilderTest do
       assert GraphqlBuilder.mutation(query) == expected
     end
   end
+
+  describe "subscriptions" do
+    test "without required variables" do
+      query = %Query{
+        operation: :thought_created,
+        variables: [name_like: "Lannister"],
+        fields: [:id]
+      }
+
+      expected = """
+      subscription {
+        thought_created(name_like: "Lannister") {
+          id
+        }
+      }
+      """
+
+      assert GraphqlBuilder.subscription(query) == expected
+    end
+
+    test "with nested mutation arguments" do
+      query = %Query{
+        operation: :breed_updated,
+        variables: [id: 12],
+        fields: [:label, :abbreviation]
+      }
+
+      expected = """
+      subscription {
+        breed_updated(id: 12) {
+          label,
+          abbreviation
+        }
+      }
+      """
+
+      assert GraphqlBuilder.subscription(query) == expected
+    end
+  end
 end

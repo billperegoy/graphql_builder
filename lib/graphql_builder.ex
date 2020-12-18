@@ -6,29 +6,26 @@ defmodule GraphqlBuilder do
   alias GraphqlBuilder.Query
 
   @spec query(Query.t()) :: String.t()
-  def query(%Query{operation: operation, fields: fields, variables: variables}) do
-    indent_level = 2
-
-    [
-      query_keyword(),
-      operation_and_variables(operation, variables),
-      query_fields(fields, indent_level + 2, newline: true),
-      indented_closing_brace(indent_level),
-      indented_closing_brace(indent_level - 2)
-    ]
-    |> Enum.join()
+  def query(query) do
+    build(query_keyword(), query)
   end
 
   @spec mutation(Query.t()) :: String.t()
-  def mutation(%Query{
-        operation: operation,
-        fields: fields,
-        variables: variables
-      }) do
+  def mutation(query) do
+    build(mutation_keyword(), query)
+  end
+
+  @spec subscription(Query.t()) :: String.t()
+  def subscription(query) do
+    build(subscription_keyword(), query)
+  end
+
+  @spec build(String.t(), Query.t()) :: String.t()
+  defp build(type_keyword, %Query{operation: operation, fields: fields, variables: variables}) do
     indent_level = 2
 
     [
-      mutation_keyword(),
+      type_keyword,
       operation_and_variables(operation, variables),
       query_fields(fields, indent_level + 2, newline: true),
       indented_closing_brace(indent_level),
@@ -45,6 +42,11 @@ defmodule GraphqlBuilder do
   @spec mutation_keyword :: String.t()
   defp mutation_keyword do
     "mutation {\n"
+  end
+
+  @spec subscription_keyword :: String.t()
+  defp subscription_keyword do
+    "subscription {\n"
   end
 
   @spec operation_and_variables(atom, [atom], keyword) :: String.t()
