@@ -116,14 +116,22 @@ defmodule GraphqlBuilder do
       is_binary(value) ->
         "#{key}: \"#{value}\""
 
-      is_list(value) ->
+      Keyword.keyword?(value) ->
         list = sub_variable_list(value)
         "#{key}: #{list}"
+
+      is_list(value) ->
+        joined_values = Enum.map_join(value, ",", &quote_if_binary/1)
+        "#{key}: [#{joined_values}]"
 
       true ->
         "#{key}: #{value}"
     end
   end
+
+  @spec quote_if_binary(any) :: any
+  defp quote_if_binary(string) when is_binary(string), do: "\"#{string}\""
+  defp quote_if_binary(not_string), do: not_string
 
   @spec sub_variable_list([atom | keyword]) :: String.t()
   defp sub_variable_list(variables) do
