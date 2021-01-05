@@ -5,8 +5,8 @@ defmodule GraphqlBuilder.Query do
 
   @type t :: %__MODULE__{
           operation: atom,
-          fields: [atom],
-          variables: [atom]
+          fields: [atom | tuple],
+          variables: [atom | tuple]
         }
 
   defstruct [

@@ -49,7 +49,7 @@ defmodule GraphqlBuilder do
     "subscription {\n"
   end
 
-  @spec operation_and_variables(atom, [atom], keyword) :: String.t()
+  @spec operation_and_variables(atom, [atom | tuple], keyword) :: String.t()
   defp operation_and_variables(operation, variables, opts \\ []) do
     indent_level = Keyword.get(opts, :indent_level, 2)
 
@@ -64,7 +64,7 @@ defmodule GraphqlBuilder do
     indent(indent_level) <> "}\n"
   end
 
-  @spec query_fields([:atom], integer, keyword) :: String.t()
+  @spec query_fields([atom | tuple], integer, keyword) :: String.t()
   defp query_fields(fields, indent_level, opts \\ []) do
     eol =
       if Keyword.get(opts, :newline, false) do
@@ -100,7 +100,7 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
-  @spec variable_list([atom] | nil) :: String.t()
+  @spec variable_list([atom | tuple] | nil) :: String.t()
   defp variable_list(nil) do
     ""
   end
@@ -112,7 +112,7 @@ defmodule GraphqlBuilder do
     |> (fn list -> "(#{list})" end).()
   end
 
-  @spec variable({atom, atom | keyword}) :: String.t()
+  @spec variable({atom, any}) :: String.t()
   defp variable({key, value}) do
     cond do
       is_binary(value) ->
@@ -135,7 +135,7 @@ defmodule GraphqlBuilder do
   defp quote_if_binary(string) when is_binary(string), do: "\"#{string}\""
   defp quote_if_binary(not_string), do: not_string
 
-  @spec sub_variable_list([atom | keyword]) :: String.t()
+  @spec sub_variable_list([atom | tuple]) :: String.t()
   defp sub_variable_list(variables) do
     variables
     |> Enum.map(&variable/1)
