@@ -104,6 +104,24 @@ defmodule GraphqlBuilderTest do
 
       assert GraphqlBuilder.query(query) == expected
     end
+
+    test "with newlines" do
+      query = %Query{
+        operation: :shopping_list,
+        fields: [:text],
+        variables: [text: "milk\norange juice\nstarfruit"]
+      }
+
+      expected = ~S"""
+      query {
+        shopping_list(text: "milk\norange juice\nstarfruit") {
+          text
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
   end
 
   describe "mutations" do

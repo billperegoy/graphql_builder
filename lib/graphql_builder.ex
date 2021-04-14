@@ -116,7 +116,7 @@ defmodule GraphqlBuilder do
   defp variable({key, value}) do
     cond do
       is_binary(value) ->
-        "#{key}: \"#{value}\""
+        "#{key}: #{inspect(value)}"
 
       Keyword.keyword?(value) ->
         list = sub_variable_list(value)
@@ -132,7 +132,7 @@ defmodule GraphqlBuilder do
   end
 
   @spec quote_if_binary(any) :: any
-  defp quote_if_binary(string) when is_binary(string), do: "\"#{string}\""
+  defp quote_if_binary(string) when is_binary(string), do: inspect(string)
   defp quote_if_binary(not_string), do: not_string
 
   @spec sub_variable_list([atom | tuple]) :: String.t()
