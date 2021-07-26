@@ -76,7 +76,7 @@ defmodule GraphqlBuilderTest do
 
       expected = """
       query {
-        thoughts(ids: [12,13]) {
+        thoughts(ids: [12, 13]) {
           name,
           thought
         }
@@ -95,7 +95,7 @@ defmodule GraphqlBuilderTest do
 
       expected = """
       query {
-        thoughts(ids: ["12","13"]) {
+        thoughts(ids: ["12", "13"]) {
           name,
           thought
         }
@@ -167,6 +167,28 @@ defmodule GraphqlBuilderTest do
 
       assert GraphqlBuilder.mutation(query) == expected
     end
+  end
+
+  test "with nested lists of objects in mutation arguments" do
+    query = %Query{
+      operation: :update_breed,
+      variables: [
+        id: 12,
+        params: [things: [[num: 1], [num: "two"]]]
+      ],
+      fields: [:label, :abbreviation]
+    }
+
+    expected = """
+    mutation {
+      update_breed(id: 12, params: {things: [{num: 1}, {num: "two"}]}) {
+        label,
+        abbreviation
+      }
+    }
+    """
+
+    assert GraphqlBuilder.mutation(query) == expected
   end
 
   describe "subscriptions" do
