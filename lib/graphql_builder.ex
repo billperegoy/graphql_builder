@@ -5,6 +5,8 @@ defmodule GraphqlBuilder do
 
   alias GraphqlBuilder.Query
 
+  @type fields :: [atom | tuple]
+
   @spec query(Query.t()) :: String.t()
   def query(query) do
     build(query_keyword(), query)
@@ -64,29 +66,29 @@ defmodule GraphqlBuilder do
     indent(indent_level) <> "}\n"
   end
 
-  @spec query_fields([atom | tuple], integer, keyword) :: String.t()
-  defp query_fields(fields, indent_level, opts \\ []) do
-    eol =
-      if Keyword.get(opts, :newline, false) do
-        "\n"
-      else
-        ""
-      end
+  @spec query_fields(fields | {keyword, fields}, integer, keyword) :: String.t()
+  defp query_fields(input, indent_level, opts \\ [])
 
-    if Enum.all?(fields, &is_atom/1) do
-      fields
-      |> Enum.map(&(indent(indent_level) <> "#{&1}"))
-      |> Enum.join(",\n")
-    else
-      {field_string, _} = Enum.reduce(fields, {"", indent_level}, &process_nested_field/2)
-      field_string
-    end <>
-      eol
+  defp query_fields(fields, indent_level, opts) do
+    {field_string, _} = Enum.reduce(fields, {"", indent_level}, &process_nested_field/2)
+    String.trim_trailing(field_string, "\n") <> eol(opts)
   end
 
   @spec process_nested_field(atom, {String.t(), integer}) :: {String.t(), integer}
   defp process_nested_field(elem, {acc, indent_level}) when is_atom(elem) do
-    {acc <> indent(indent_level) <> "#{elem},\n", indent_level}
+    {acc <> indent(indent_level) <> "#{elem}\n", indent_level}
+  end
+
+  # For variables with their own arguments.
+  defp process_nested_field({label, {args, sub_fields}}, {acc, indent_level}) do
+    acc =
+      acc <>
+        indent(indent_level) <>
+        "#{label}#{variable_list(args)} {\n" <>
+        query_fields(sub_fields, indent_level + 2) <>
+        "\n" <> indent(indent_level) <> "}"
+
+    {acc, indent_level}
   end
 
   defp process_nested_field({label, sub_fields}, {acc, indent_level}) do
@@ -100,7 +102,7 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
-  @spec variable_list([atom | tuple] | nil) :: String.t()
+  @spec variable_list([{atom, any}] | nil) :: String.t()
   defp variable_list(nil) do
     ""
   end
@@ -152,5 +154,10 @@ defmodule GraphqlBuilder do
   @spec indent(integer) :: String.t()
   defp indent(n) do
     String.duplicate(" ", n)
+  end
+
+  @spec eol(keyword) :: String.t()
+  defp eol(opts) do
+    if opts[:newline], do: "\n", else: ""
   end
 end
