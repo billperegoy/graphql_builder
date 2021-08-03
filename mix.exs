@@ -1,15 +1,18 @@
 defmodule GraphqlBuilder.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/billperegoy/graphql_builder"
+  @version "0.3.0"
+
   def project do
     [
       app: :graphql_builder,
-      version: "0.3.0",
+      version: @version,
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      package: package(),
-      description: "Tool to build GraphQL query strings from Elixir structs"
+      docs: docs(),
+      package: package()
     ]
   end
 
@@ -32,8 +35,24 @@ defmodule GraphqlBuilder.MixProject do
 
   defp package() do
     [
+      description: "Tool to build GraphQL query strings from Elixir structs",
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/billperegoy/graphql_builder"}
+      links: %{
+        "GitHub" => @source_url
+      }
+    ]
+  end
+
+  defp docs do
+    [
+      extras: [
+        "LICENSE.md": [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: @version,
+      formatters: ["html"]
     ]
   end
 end
