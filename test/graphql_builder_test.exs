@@ -122,6 +122,29 @@ defmodule GraphqlBuilderTest do
 
       assert GraphqlBuilder.query(query) == expected
     end
+
+    test "with fragments" do
+      query = %Query{
+        operation: :store_search,
+        fields: [{:on, "Product", [:shelf]}, {:on, "Service", [:day]}],
+        variables: [text: "cheese"]
+      }
+
+      expected = ~S"""
+      query {
+        store_search(text: "cheese") {
+          ... on Product {
+            shelf
+          }
+          ... on Service {
+            day
+          }
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
   end
 
   describe "mutations" do

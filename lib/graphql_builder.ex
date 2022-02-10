@@ -91,6 +91,17 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
+  defp process_nested_field({:on, on, sub_fields}, {acc, indent_level}) do
+    acc =
+      acc <>
+        indent(indent_level) <>
+        "... on #{on} {\n" <>
+        query_fields(sub_fields, indent_level + 2) <>
+        "\n" <> indent(indent_level) <> "}\n"
+
+    {acc, indent_level}
+  end
+
   defp process_nested_field({label, sub_fields}, {acc, indent_level}) do
     acc =
       acc <>
