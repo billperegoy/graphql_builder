@@ -91,6 +91,17 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
+  defp process_nested_field({:on, on, sub_fields}, {acc, indent_level}) do
+    acc =
+      acc <>
+        indent(indent_level) <>
+        "... on #{on} {\n" <>
+        query_fields(sub_fields, indent_level + 2) <>
+        "\n" <> indent(indent_level) <> "}\n"
+
+    {acc, indent_level}
+  end
+
   defp process_nested_field({label, sub_fields}, {acc, indent_level}) do
     acc =
       acc <>
@@ -108,10 +119,8 @@ defmodule GraphqlBuilder do
   end
 
   defp variable_list(variables) do
-    variables
-    |> Enum.map(&variable/1)
-    |> Enum.join(", ")
-    |> (fn list -> "(#{list})" end).()
+    str = Enum.map_join(variables, ", ", &variable/1)
+    "(#{str})"
   end
 
   @spec variable({atom, any}) :: String.t()
@@ -145,10 +154,8 @@ defmodule GraphqlBuilder do
 
   @spec sub_variable_list([atom | tuple]) :: String.t()
   defp sub_variable_list(variables) do
-    variables
-    |> Enum.map(&variable/1)
-    |> Enum.join(", ")
-    |> (fn list -> "{#{list}}" end).()
+    str = Enum.map_join(variables, ", ", &variable/1)
+    "{#{str}}"
   end
 
   @spec indent(integer) :: String.t()
