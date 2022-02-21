@@ -10,9 +10,13 @@ defmodule GraphqlBuilder.MixProject do
       version: @version,
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps(),
       docs: docs(),
-      package: package()
+      package: package(),
+      preferred_cli_env: [
+        ci: :test
+      ]
     ]
   end
 
@@ -27,13 +31,24 @@ defmodule GraphqlBuilder.MixProject do
   defp deps do
     [
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
-  defp package() do
+  defp aliases do
+    [
+      ci: ["lint", "test", "dialyzer"],
+      lint: [
+        "compile --warnings-as-errors",
+        "format --check-formatted",
+        "credo --strict"
+      ]
+    ]
+  end
+
+  defp package do
     [
       description: "Tool to build GraphQL query strings from Elixir structs",
       licenses: ["Apache-2.0"],

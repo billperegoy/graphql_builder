@@ -119,10 +119,8 @@ defmodule GraphqlBuilder do
   end
 
   defp variable_list(variables) do
-    variables
-    |> Enum.map(&variable/1)
-    |> Enum.join(", ")
-    |> (fn list -> "(#{list})" end).()
+    str = Enum.map_join(variables, ", ", &variable/1)
+    "(#{str})"
   end
 
   @spec variable({atom, any}) :: String.t()
@@ -156,10 +154,8 @@ defmodule GraphqlBuilder do
 
   @spec sub_variable_list([atom | tuple]) :: String.t()
   defp sub_variable_list(variables) do
-    variables
-    |> Enum.map(&variable/1)
-    |> Enum.join(", ")
-    |> (fn list -> "{#{list}}" end).()
+    str = Enum.map_join(variables, ", ", &variable/1)
+    "{#{str}}"
   end
 
   @spec indent(integer) :: String.t()
