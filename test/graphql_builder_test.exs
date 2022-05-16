@@ -67,6 +67,24 @@ defmodule GraphqlBuilderTest do
       assert GraphqlBuilder.query(query) == expected
     end
 
+    test "with null param" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:thought],
+        variables: [subject: nil]
+      }
+
+      expected = """
+      query {
+        thoughts(subject: null) {
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
     test "with integer lists" do
       query = %Query{
         operation: :thoughts,

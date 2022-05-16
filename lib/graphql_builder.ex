@@ -137,6 +137,9 @@ defmodule GraphqlBuilder do
         joined_values = Enum.map_join(value, ", ", &value/1)
         "#{key}: [#{joined_values}]"
 
+      is_nil(value) ->
+        "#{key}: null"
+
       true ->
         "#{key}: #{value}"
     end
