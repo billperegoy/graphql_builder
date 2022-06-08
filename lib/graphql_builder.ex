@@ -7,6 +7,27 @@ defmodule GraphqlBuilder do
 
   @type fields :: [atom | tuple]
 
+  @doc """
+  Creates a structure with the fields required for the creation of a GraphQL query.
+
+  ## Parameters
+
+    - on: String that represents the name of the fragment.
+    - sub_fields: List with subfields selected in the fragment.
+
+  ## Examples
+
+      iex> %GraphqlBuilder.Query{operation: :orders, fields: [:id, {:on, "User", [:username]}]} |> GraphqlBuilder.query()
+      query {
+        orders {
+          id
+          ... on User {
+            username
+          }
+        }
+      }
+
+  """
   @spec query(Query.t()) :: String.t()
   def query(query) do
     build(query_keyword(), query)
