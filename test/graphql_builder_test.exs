@@ -1,8 +1,9 @@
 defmodule GraphqlBuilderTest do
   use ExUnit.Case
-  doctest GraphqlBuilder
-
+  import ExUnit.CaptureLog
   alias GraphqlBuilder.Query
+
+  doctest GraphqlBuilder
 
   describe "queries" do
     test "without nested fields" do
@@ -160,7 +161,7 @@ defmodule GraphqlBuilderTest do
       assert GraphqlBuilder.query(query) == expected
     end
 
-    test "with fragments" do
+    test "with fragments (deprecated/legacy style)" do
       query = %Query{
         operation: :store_search,
         fields: [{:on, "Product", [:shelf]}, {:on, "Service", [:day]}],
@@ -176,6 +177,48 @@ defmodule GraphqlBuilderTest do
           ... on Service {
             day
           }
+        }
+      }
+      """
+
+      assert capture_log(fn ->
+               assert GraphqlBuilder.query(query) == expected
+             end) =~ "Deprecated"
+    end
+
+    test "with in-line fragments" do
+      query = %Query{
+        operation: :store_search,
+        fields: [{:frag, "Product", [:shelf]}, {:frag, "Service", [:day]}],
+        variables: [text: "cheese"]
+      }
+
+      expected = ~S"""
+      query {
+        store_search(text: "cheese") {
+          ... on Product {
+            shelf
+          }
+          ... on Service {
+            day
+          }
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
+    test "with named fragments" do
+      query = %Query{
+        operation: :get_thing,
+        fields: [frag: "Trinket"]
+      }
+
+      expected = ~S"""
+      query {
+        get_thing {
+          ...Trinket
         }
       }
       """
