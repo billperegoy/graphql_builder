@@ -95,6 +95,30 @@ query {
 
 ```
 
+### Fragment in-line support
+
+In version 0.3.2 the library only supports inline fragments and does not yet support previously defined fragments.
+
+To define an inline fragment you can do it as follows:
+
+```elixir
+iex> query = %GraphqlBuilder.Query{
+...>   operation: :orders,
+...>   fields: [:id, {:on, "User", [:username]}]
+...> }
+
+iex> GraphqlBuilder.query(query)
+query {
+  orders {
+    id,
+    ... on WpUser {
+      username
+    }
+  }
+}
+
+```
+
 ### Simple Mutation
 
 ```elixir

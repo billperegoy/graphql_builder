@@ -96,12 +96,15 @@ defmodule GraphqlBuilder do
 
   ## Parameters
 
-    - input: String with the keys to be extracted in the query.
+    - input: String that represents the name of the person.
 
   ## Examples
 
-      iex> %GraphqlBuilder.Query{fields: "home, office", operation: :orders, variables: [id: 12]}
-      "query {\n  orders(id: 12) {\nhome, office  }\n}\n"
+      iex> Greeter.hello("Sean")
+      "Hello, Sean"
+
+      iex> Greeter.hello("pete")
+      "Hello, pete"
 
   """
   defp query_fields(input, indent_level, opts) when is_bitstring(input) do
@@ -167,9 +170,6 @@ defmodule GraphqlBuilder do
     cond do
       is_binary(value) ->
         "#{key}: #{inspect(value)}"
-
-      [] == value ->
-        "#{key}: []"
 
       Keyword.keyword?(value) ->
         list = sub_variable_list(value)

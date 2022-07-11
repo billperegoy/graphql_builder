@@ -168,9 +168,6 @@ defmodule GraphqlBuilder do
       is_binary(value) ->
         "#{key}: #{inspect(value)}"
 
-      [] == value ->
-        "#{key}: []"
-
       Keyword.keyword?(value) ->
         list = sub_variable_list(value)
         "#{key}: #{list}"

@@ -90,23 +90,7 @@ defmodule GraphqlBuilder do
   @spec query_fields(fields | {keyword, fields}, integer, keyword) :: String.t()
   defp query_fields(input, indent_level, opts \\ [])
 
-
-  @doc """
-  To accept a string literal with the query to be performed.
-
-  ## Parameters
-
-    - input: String with the keys to be extracted in the query.
-
-  ## Examples
-
-      iex> %GraphqlBuilder.Query{fields: "home, office", operation: :orders, variables: [id: 12]}
-      "query {\n  orders(id: 12) {\nhome, office  }\n}\n"
-
-  """
-  defp query_fields(input, indent_level, opts) when is_bitstring(input) do
-    input
-  end
+  defp query_fields(input, indent_level, opts \\ [])
 
   defp query_fields(fields, indent_level, opts) do
     {field_string, _} = Enum.reduce(fields, {"", indent_level}, &process_nested_field/2)
@@ -167,9 +151,6 @@ defmodule GraphqlBuilder do
     cond do
       is_binary(value) ->
         "#{key}: #{inspect(value)}"
-
-      [] == value ->
-        "#{key}: []"
 
       Keyword.keyword?(value) ->
         list = sub_variable_list(value)

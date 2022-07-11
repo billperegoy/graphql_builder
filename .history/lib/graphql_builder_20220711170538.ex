@@ -101,7 +101,9 @@ defmodule GraphqlBuilder do
   ## Examples
 
       iex> %GraphqlBuilder.Query{fields: "home, office", operation: :orders, variables: [id: 12]}
-      "query {\n  orders(id: 12) {\nhome, office  }\n}\n"
+      "Hello, Sean"
+
+
 
   """
   defp query_fields(input, indent_level, opts) when is_bitstring(input) do
@@ -167,9 +169,6 @@ defmodule GraphqlBuilder do
     cond do
       is_binary(value) ->
         "#{key}: #{inspect(value)}"
-
-      [] == value ->
-        "#{key}: []"
 
       Keyword.keyword?(value) ->
         list = sub_variable_list(value)
