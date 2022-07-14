@@ -41,8 +41,8 @@ iex> query = %Query{operation: :thoughts, fields: [:id, :name, :thought]}
 iex>  GraphqlBuilder.query(query)
 query {
   thoughts {
-    id,
-    name,
+    id
+    name
     thought
   }
 }
@@ -61,7 +61,7 @@ iex> query = %Query{
 iex> GraphqlBuilder.query(query)
 query {
   thoughts(id: 12) {
-    name,
+    name
     thought
   }
 }
@@ -79,14 +79,14 @@ iex> query = %Query{
 iex> GraphqlBuilder.query(query)
 query {
   orders {
-    id,
-    amount,
+    id
+    amount
     user {
-      id,
-      name,
-      email,
+      id
+      name
+      email
       address {
-        city,
+        city
         country
       }
     }
@@ -131,7 +131,7 @@ iex> query = %Query{
 iex> GraphqlBuilder.mutation(query)
 mutation {
   update_breed(id: 12, params: {label: "label", abbreviation: "abbreviation"}) {
-    label,
+    label
     abbreviation
   }
 }
