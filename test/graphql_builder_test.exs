@@ -86,6 +86,24 @@ defmodule GraphqlBuilderTest do
       assert GraphqlBuilder.query(query) == expected
     end
 
+    test "with empty object param" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:name],
+        variables: [params: %{}]
+      }
+
+      expected = """
+      query {
+        thoughts(params: {}) {
+          name
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
     test "with null param" do
       query = %Query{
         operation: :thoughts,

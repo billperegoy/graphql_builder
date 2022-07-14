@@ -113,7 +113,7 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
-  @spec variable_list([{atom, any}] | nil) :: String.t()
+  @spec variable_list(keyword | map | nil) :: String.t()
   defp variable_list(nil) do
     ""
   end
@@ -132,7 +132,7 @@ defmodule GraphqlBuilder do
       [] == value ->
         "#{key}: []"
 
-      Keyword.keyword?(value) ->
+      Keyword.keyword?(value) or is_map(value) ->
         list = sub_variable_list(value)
         "#{key}: #{list}"
 
@@ -158,7 +158,7 @@ defmodule GraphqlBuilder do
       else: val
   end
 
-  @spec sub_variable_list([atom | tuple]) :: String.t()
+  @spec sub_variable_list(map | [atom | tuple]) :: String.t()
   defp sub_variable_list(variables) do
     str = Enum.map_join(variables, ", ", &variable/1)
     "{#{str}}"
