@@ -16,6 +16,19 @@ idea for this package was taken from the
 [gql-query-builder](https://github.com/atulmy/gql-query-builder) package
 written for node development.
 
+## Development
+
+### For start app
+
+```bash
+  mix deps get
+  iex -S mix app.start
+```
+
+```elixir
+  query = %GraphqlBuilder.Query{operation: :thoughts, fields: [:id, :name, :thought]}
+```
+
 ## Installation
 
 The package can be installed by adding `:graphql_builder` to your list of
