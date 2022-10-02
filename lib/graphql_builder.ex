@@ -4,6 +4,7 @@ defmodule GraphqlBuilder do
   """
 
   alias GraphqlBuilder.Query
+  require Logger
 
   @type fields :: [atom | tuple]
 
@@ -91,13 +92,27 @@ defmodule GraphqlBuilder do
     {acc, indent_level}
   end
 
-  defp process_nested_field({:on, on, sub_fields}, {acc, indent_level}) do
+  # Hint should be `:frag`. `:on` is deprecated and will be removed.
+  defp process_nested_field({hint, frag, sub_fields} = elem, {acc, indent_level})
+       when hint in [:frag, :on] do
+    if hint == :on,
+      do: Logger.warn("Deprecated :on fragment usage found. Use :frag instead: #{inspect(elem)}")
+
     acc =
       acc <>
         indent(indent_level) <>
-        "... on #{on} {\n" <>
+        "... on #{frag} {\n" <>
         query_fields(sub_fields, indent_level + 2) <>
         "\n" <> indent(indent_level) <> "}\n"
+
+    {acc, indent_level}
+  end
+
+  defp process_nested_field({:frag, frag}, {acc, indent_level}) do
+    acc =
+      acc <>
+        indent(indent_level) <>
+        "...#{frag}\n"
 
     {acc, indent_level}
   end

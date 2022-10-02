@@ -92,7 +92,40 @@ query {
     }
   }
 }
+```
 
+### In-line Fragment
+
+```elixir
+iex> query = %GraphqlBuilder.Query{
+...>   operation: :orders,
+...>   fields: [:id, {:frag, "BakeryOrder", [:pastry_type]}]
+...> }
+iex> GraphqlBuilder.query(query)
+query {
+  orders {
+    id
+    ... on BakeryOrder {
+      pastry_type
+    }
+  }
+}
+```
+
+### Named Fragment
+
+```elixir
+iex> query = %GraphqlBuilder.Query{
+...>   operation: :orders,
+...>   fields: [:id, {:frag, "InvoiceInfo"}]
+...> }
+iex> GraphqlBuilder.query(query)
+query {
+  orders {
+    id
+    ...InvoiceInfo
+  }
+}
 ```
 
 ### Simple Mutation
