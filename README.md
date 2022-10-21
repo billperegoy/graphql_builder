@@ -95,6 +95,27 @@ query {
 
 ```
 
+### Query with Variables in Nested Fields
+
+```elixir
+iex> query = %Query{
+...>  operation: :organization,
+...>  variables: [id: 4],
+...>    fields: [:name, locations: {[region: "west", nice: true], [:name]}]
+...> }
+
+iex> GraphqlBuilder.mutation(query)
+query {
+  organization(id: 4) {
+    name
+    locations(region: "west", nice: true) {
+      name
+    }
+  }
+}
+
+```
+
 ### Simple Mutation
 
 ```elixir
@@ -105,7 +126,7 @@ iex> query = %Query{
 ...>    thought: "I drink and I know things."
 ...>  ],
 ...>  fields: [:id]
-...>}
+...> }
 
 iex> GraphqlBuilder.mutation(query)
 mutation {
