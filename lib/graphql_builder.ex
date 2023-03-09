@@ -143,6 +143,11 @@ defmodule GraphqlBuilder do
       is_nil(value) ->
         "#{key}: null"
 
+      # If the user specifies an atom (implicitly not nil (since that case is
+      # above this one), explicitly not true or false), assume it is an enum.
+      is_atom(value) and not is_boolean(value) ->
+        "#{key}: #{String.upcase(to_string(value))}"
+
       true ->
         "#{key}: #{value}"
     end
