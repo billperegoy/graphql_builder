@@ -144,12 +144,48 @@ defmodule GraphqlBuilderTest do
       query = %Query{
         operation: :thoughts,
         fields: [:thought],
-        variables: [type: :important]
+        variables: [type: :IMPORTANT]
       }
 
       expected = """
       query {
         thoughts(type: IMPORTANT) {
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
+    test "with a lower-case atom param" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:thought],
+        variables: [type: :important]
+      }
+
+      expected = """
+      query {
+        thoughts(type: important) {
+          thought
+        }
+      }
+      """
+
+      assert GraphqlBuilder.query(query) == expected
+    end
+
+    test "with a wacky-case atom param" do
+      query = %Query{
+        operation: :thoughts,
+        fields: [:thought],
+        variables: [type: :ImPorTaNt]
+      }
+
+      expected = """
+      query {
+        thoughts(type: ImPorTaNt) {
           thought
         }
       }
